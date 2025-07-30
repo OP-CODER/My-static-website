@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/OP-CODER/My-static-website.git' // 🔧 Replace with your actual repo
+                git branch: 'main', url: 'https://github.com/OP-CODER/My-static-website.git' // 🔧 Replace with your actual repo
             }
         }
 
