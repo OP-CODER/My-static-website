@@ -1,49 +1,22 @@
 pipeline {
     agent any
-
-    environment {
-        SONARQUBE = 'SonarQube' // 🔧 Must match the name of your SonarQube server in Jenkins
-        SITE_PATH = 'C:\\xampp\\htdocs' // ✅ This is the XAMPP web root
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/OP-CODER/My-static-website.git' // 🔧 Replace with your actual repo
+                checkout scm
             }
         }
-
-        stage('SonarQube Analysis') {
+        stage('Build') {
             steps {
-                withSonarQubeEnv("${SONARQUBE}") {
-                    bat 'sonar-scanner.bat' // ✅ sonar-scanner must be installed and in PATH
+                sh 'mvn clean install'
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('Local SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=YourProjectKey -Dsonar.login=YourToken'
                 }
             }
-        }
-
-        stage('Deploy Website') {
-            steps {
-                bat """
-                    rmdir /S /Q "%SITE_PATH%"
-                    mkdir "%SITE_PATH%"
-                    xcopy /E /Y src "%SITE_PATH%"
-                """
-            }
-        }
-
-        stage('Done') {
-            steps {
-                echo 'Your site is now available at http://localhost/'
-            }
-        }
-    }
-
-    post {
-        failure {
-            echo 'Pipeline failed.'
-        }
-        success {
-            echo 'Static site deployed successfully!'
         }
     }
 }
