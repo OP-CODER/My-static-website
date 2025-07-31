@@ -29,14 +29,14 @@ pipeline {
 
         stage('Performance Test (JMeter)') {
             steps {
-                // Assuming you have JMeter .jmx scripts in the repo
-                sh '/path/to/jmeter -n -t scripts/perftest.jmx -l results.jtl'
+                sh '''
+                /c/apache-jmeter-5.5/bin/jmeter -n -t "/c/Users/mohda/Desktop/Thread Group.jmx" -l "/c/Users/mohda/Desktop/results.jtl"
+                '''
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
-                // Adjust path as needed for your Tomcat setup
                 sh '''
                 cp target/my-static-website.war /c/Tomcat/apache-tomcat-9.0.107/webapps/
                 '''
@@ -44,3 +44,4 @@ pipeline {
         }
     }
 }
+
